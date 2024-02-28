@@ -10,13 +10,21 @@
 
     </div>
     <div class="form-group col-xs-12 float-label-form-group controls">
-        {{render_field(form.apaterno, class = "form-control")}}
-
-    </div>
-    <div class="form-group col-xs-12 float-label-form-group controls">
         {{render_field(form.email, class = "form-control")}}
 
     </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.telefono, class = "form-control")}}
+
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.direccion, class = "form-control")}}
+
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.sueldo, class = "form-control")}}
+    </div>
+   
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="submit" name="registrar" id="registrar" value="Registrar">
 </form>

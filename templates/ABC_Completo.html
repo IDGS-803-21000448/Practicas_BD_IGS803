@@ -6,29 +6,34 @@
 
 <div class="container">
     <div class="row">
-        <h3>Alumnos</h3>
+        <h3>Empleados</h3>
         <h4><a href="/index">Nuevo</a></h4>
         <table class="table">
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Apellido Paterno</th>
                     <th>Correo</th>
+                    <th>Telefono</th>
+                    <th>Direccion</th>
+                    <th>Sueldo</th>
                     <th>Eliminar</th>
                     <th>Modificar</th>
                 </tr>
             </thead>
             <tbody>
-                {%for alum in alumnos%}
+                {%for empleado in empleados%}
                 <tr>
-                    <td>{{alum.nombre}}</td>
-                    <td>{{alum.apaterno}}</td>
-                    <td>{{alum.email}}</td>
+                    <td>{{empleado.nombre}}</td>
+                    <td>{{empleado.email}}</td>
+                    <td>{{empleado.telefono}}</td>
+                    <td>{{empleado.direccion}}</td>
+                    <td>{{empleado.sueldo}}</td>
+
                     <td>
-                        <a href="eliminar.html?id={{alum.id}}" class="btn btn-danger">Eliminar</a>   
+                        <a href="eliminar.html?id={{empleado.id}}" class="btn btn-danger">Eliminar</a>   
                     </td>
                     <td>
-                        <a href="modificar.html?id={{alum.id}}" class="btn btn-warning">Modifcar</a>
+                        <a href="modificar.html?id={{empleado.id}}" class="btn btn-warning">Modifcar</a>
                     </td>
                 </tr>
                 {%endfor%}

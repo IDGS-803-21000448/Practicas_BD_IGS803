@@ -1,6 +1,8 @@
 from wtforms import Form
-from wtforms import StringField, SelectField,RadioField, EmailField, IntegerField
+from wtforms import StringField, SelectField,RadioField, EmailField, IntegerField, FloatField
 from wtforms import validators
+
+
 
 class UsersForm(Form):
     nombre=StringField('nombre', [
@@ -23,17 +25,24 @@ class UsersForm(Form):
         validators.Email(message='Ingrese un correo valido')
     ])
 
-
-class UsersForm2(Form):
-    nombre=IntegerField('id')
+# NOMBRE, CORREO, TELEFONO, DIRECCION, SUELDO
+class EmpForm(Form):
+    identificador=IntegerField('id')
     nombre=StringField('nombre', [
         validators.DataRequired(message='El campo es requerido'),
-        validators.length(min=4, max=10, message='Ingresa un nombre valido')
-    ])
-    apaterno=StringField('apaterno', [
-        validators.DataRequired(message='El campo es requerido'),
-        validators.length(min=4, max=15, message='Ingresa un apellido paterno valido')
+        validators.length(min=4, max=50, message='Ingresa un nombre valido')
     ])
     email = EmailField('correo', [
         validators.Email(message='Ingrese un correo valido')
+    ])
+    telefono=StringField('telefono', [
+        validators.DataRequired(message='El campo es requerido'),
+      validators.length(min=4, max=10, message='Ingresa un nombre valido')
+    ])
+    direccion=StringField('direccion', [
+        validators.DataRequired(message='El campo es requerido'),
+      validators.length(min=4, max=50, message='Ingresa un nombre valido')
+    ])
+    sueldo=FloatField('sueldo', [
+        validators.DataRequired(message='El campo es requerido'),
     ])

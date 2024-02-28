@@ -6,7 +6,7 @@ from flask import redirect
 from flask_wtf import CSRFProtect
 from config import DevelopmentConfig
 from models import db
-from models import Alumnos
+from models import Empleado
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -20,42 +20,26 @@ def page_not_found(e):
  
 @app.route("/index",methods=["GET", "POST"])
 def index():
-    alum_form = forms.UsersForm2(request.form)
+    emp_form = forms.EmpForm(request.form)
     if request.method == "POST":
-        alumn = Alumnos(nombre = alum_form.nombre.data
-                        ,apaterno = alum_form.apaterno.data
-                        ,email = alum_form.email.data)
+        emp = Empleado(nombre = emp_form.nombre.data
+                        ,telefono = emp_form.telefono.data
+                        ,email = emp_form.email.data
+                        , direccion = emp_form.direccion.data
+                        ,sueldo = emp_form.sueldo.data)
         
-        db.session.add(alumn)
+        db.session.add(emp)
         db.session.commit()
 
 
-    return render_template("index.html", form = alum_form)
+    return render_template("index.html", form = emp_form)
 
 @app.route("/ABC_Completo",methods=["GET", "POST"])
 def ABC_Completo():
-    alum_form = forms.UsersForm2(request.form)
-    alumno = Alumnos.query.all()
+    emp_form = forms.EmpForm(request.form)
+    empleados = Empleado.query.all()
 
-    return render_template("ABC_Completo.html", alumnos=alumno)
-
-@app.route("/alumnos", methods=["GET", "POST"])
-def alumnos():
-    nom = ''
-    apa = ''
-    ama = ''
-    alum_form = forms.UsersForm(request.form)
-    if request.method == "POST" and alum_form.validate():
-        nom = alum_form.nombre.data
-        apa = alum_form.apaterno.data
-        ama = alum_form.amaterno.data
-
-        mensaje = f"Bienvenido {nom}"
-        flash(mensaje)
-    
-    return render_template("alumnos.html",
-                            form = alum_form,
-                            nom=nom, apa=apa, ama=ama)
+    return render_template("ABC_Completo.html", empleados=empleados)
 
 
 if __name__ == "__main__":
