@@ -1,0 +1,37 @@
+
+{%extends 'layout.html' %}
+
+{%block content %}
+{% from "_macros.html" import render_field %}
+
+<form action="/modificar" id="modificar" method="post">
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.id, class = "form-control")}}
+
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.nombre, class = "form-control")}}
+
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.email, class = "form-control")}}
+
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.telefono, class = "form-control")}}
+
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.direccion, class = "form-control")}}
+
+    </div>
+    <div class="form-group col-xs-12 float-label-form-group controls">
+        {{render_field(form.sueldo, class = "form-control")}}
+    </div>
+   
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="submit" name="modificar" id="modificar" value="Modificar" class="btn btn-warning">
+    <a href="ABC_Completo" class="btn btn-success">Cancelar</a>
+</form>
+
+{%endblock%}

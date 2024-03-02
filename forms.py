@@ -27,7 +27,7 @@ class UsersForm(Form):
 
 # NOMBRE, CORREO, TELEFONO, DIRECCION, SUELDO
 class EmpForm(Form):
-    identificador=IntegerField('id')
+    id=IntegerField('id')
     nombre=StringField('nombre', [
         validators.DataRequired(message='El campo es requerido'),
         validators.length(min=4, max=50, message='Ingresa un nombre valido')
