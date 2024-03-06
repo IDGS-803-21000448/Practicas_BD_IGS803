@@ -1,7 +1,7 @@
 from wtforms import Form
-from wtforms import StringField, SelectField,RadioField, EmailField, IntegerField, FloatField
+from wtforms import StringField, TelField, SelectField,RadioField, EmailField, IntegerField, FloatField, SelectMultipleField
 from wtforms import validators
-
+from wtforms.widgets import ListWidget, CheckboxInput
 
 
 class UsersForm(Form):
@@ -46,3 +46,33 @@ class EmpForm(Form):
     sueldo=FloatField('sueldo', [
         validators.DataRequired(message='El campo es requerido'),
     ])
+
+
+class PedidoForm(Form):
+    cliente_nombre = StringField('Nombre del Cliente', validators=[
+        validators.DataRequired(message='Este campo es requerido'),
+        validators.Length(min=4, max=100, message='Ingresa un nombre válido')
+    ])
+    cliente_direccion = StringField('Dirección', validators=[
+        validators.DataRequired(message='Este campo es requerido'),
+        validators.Length(min=4, max=100, message='Ingresa una dirección válida')
+    ])
+    cliente_telefono = TelField('Teléfono', validators=[
+        validators.DataRequired(message='Este campo es requerido'),
+        validators.Length(min=7, max=15, message='Ingresa un número de teléfono válido')
+    ])
+    tamano_pizza = RadioField('Tamaño de la Pizza', choices=[
+        ('Chica', 'Chica $40'),
+        ('Mediana', 'Mediana $80'),
+        ('Grande', 'Grande $120')
+    ], validators=[validators.DataRequired(message='Selecciona un tamaño')])
+    ingredientes = SelectMultipleField('Ingredientes', choices=[
+        ('jamon', 'Jamón $10'),
+        ('piña', 'Piña $10'),
+        ('champiñones', 'Champiñones $10')
+    ], validators=[validators.Optional()], widget=ListWidget(prefix_label=False), option_widget=CheckboxInput())
+    numero_pizzas = IntegerField('Número de Pizzas', validators=[
+        validators.DataRequired(message='Este campo es requerido'),
+        validators.NumberRange(min=1, message='Ingresa un número válido de pizzas')
+    ])
+    total = FloatField('Total', validators=[validators.Optional()])

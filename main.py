@@ -6,7 +6,8 @@ from flask import redirect
 from flask_wtf import CSRFProtect
 from config import DevelopmentConfig
 from models import db
-from models import Empleado
+from models import Empleado, Pedido
+from flask import request, jsonify
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -93,6 +94,25 @@ def modificar():
 
 
 
+@app.route("/pedidos", methods=["POST", "GET"])
+def agregar_pedido():
+    pedido_form = forms.PedidoForm(request.form)
+    if request.method == "POST" and pedido_form.validate():
+        nuevo_pedido = Pedido(
+            cliente_nombre=pedido_form.cliente_nombre.data,
+            cliente_direccion=pedido_form.cliente_direccion.data,
+            cliente_telefono=pedido_form.cliente_telefono.data,
+            total=float(pedido_form.total.data)
+        )
+
+        db.session.add(nuevo_pedido)
+        db.session.commit()
+
+        mensaje = "Pedido agregado correctamente"
+        flash(mensaje)
+        return render_template("pedido.html", form=pedido_form)
+    elif request.method == 'GET':
+        return render_template("pedido.html", form=pedido_form)
 
 if __name__ == "__main__":
     csrf.init_app(app)

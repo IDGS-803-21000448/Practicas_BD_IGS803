@@ -1,0 +1,112 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+{% from "_macros.html" import render_field %}
+
+<script>
+    // Precios base por tamaño de pizza
+    const preciosPizza = {
+        'Chica': 40, 
+        'Mediana': 80, 
+        'Grande': 120, 
+    };
+    
+    // Precios adicionales por ingrediente
+    const preciosMedidas = {
+        'jamon': 10, 
+        'piña': 10, 
+        'champiñones': 10, 
+    };
+    
+    function agregarPizza() {
+    const tamanoPizza = document.querySelector('input[name="tamano_pizza"]:checked').value;
+    const ingredientesElems = document.querySelectorAll('input[name="ingredientes"]:checked');
+    const ingredientes = [];
+    let precioIngredientes = 0;
+
+    ingredientesElems.forEach(elem => {
+        const ingredienteValor = elem.value;
+        ingredientes.push(ingredienteValor)
+        precioIngredientes += preciosMedidas[ingredienteValor]
+    });
+        console.log(ingredientes)
+        const numeroPizzas = parseInt(document.getElementById('numero_pizzas').value);
+        const tabla = document.getElementById('detalle_pedido').getElementsByTagName('tbody')[0];
+
+        const precioBase = preciosPizza[tamanoPizza];
+        const subtotal = (precioBase + precioIngredientes) * numeroPizzas;
+        console.log(precioBase, precioIngredientes, numeroPizzas)
+        const nuevaFila = tabla.insertRow();
+        nuevaFila.insertCell(0).textContent = tamanoPizza;
+        nuevaFila.insertCell(1).textContent = ingredientes.join(', ');
+        nuevaFila.insertCell(2).textContent = numeroPizzas;
+        nuevaFila.insertCell(3).textContent = `$${subtotal.toFixed(2)}`;
+
+        const btnQuitar = document.createElement('button');
+        btnQuitar.textContent = 'Quitar';
+        btnQuitar.className = 'btn btn-danger';
+        btnQuitar.onclick = function() { quitarPizza(nuevaFila) };
+        nuevaFila.insertCell(4).appendChild(btnQuitar);
+        
+        actualizarTotal();
+    }
+    
+    function quitarPizza(fila) {
+        fila.parentNode.removeChild(fila);
+        actualizarTotal();
+    }
+    
+    function actualizarTotal() {
+        let total = 0;
+        document.querySelectorAll('#detalle_pedido tbody tr').forEach(row => {
+            total += parseFloat(row.cells[3].textContent.substring(1)); // Extrae el número, ignorando el signo de dolar
+        });
+        document.getElementById('total_pedido').value = total.toFixed(2);
+    }
+    
+    function confirmarPedido() {
+        const total = document.getElementById('total_pedido').value;
+        const confirmacion = confirm(`El total de tu pedido es ${total}. ¿Deseas confirmar el pedido?`);
+        if (confirmacion) {
+            alert('Pedido confirmado. Gracias por tu compra.');
+        }
+    }
+</script>
+    
+
+<form action="/pedidos" method="post" id="pedido_form">
+    <div class="container">
+        <h2>Nuevo Pedido</h2>
+        {{ render_field(form.cliente_nombre, class="form-control") }}
+        {{ render_field(form.cliente_direccion, class="form-control") }}
+        {{ render_field(form.cliente_telefono, class="form-control") }}
+        <h3>Agregar Pizza al Pedido</h3>
+        {{ render_field(form.tamano_pizza, class="form-control") }}
+        {{ render_field(form.ingredientes, class="form-check-input") }}
+        {{ render_field(form.numero_pizzas, class="form-control", id="numero_pizzas") }}
+        <button type="button" onclick="agregarPizza()" class="btn btn-success">Agregar</button>
+        
+        <h3>Detalle del Pedido</h3>
+        <table id="detalle_pedido" class="table">
+            <thead>
+                <tr>
+                    <th>Tamaño</th>
+                    <th>Ingredientes</th>
+                    <th>Número</th>
+                    <th>Subtotal</th>
+                    <th>Quitar</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="form-group">
+            <label for="total_pedido">Total del Pedido:</label>
+            {{ render_field(form.total, class="form-control", id = "total_pedido") }}
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-primary">Terminar</button>
+    </div>
+</form>
+
+{% endblock %}
