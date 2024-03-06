@@ -8,6 +8,9 @@ from config import DevelopmentConfig
 from models import db
 from models import Empleado, Pedido
 from flask import request, jsonify
+from datetime import datetime
+import calendar
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -41,6 +44,8 @@ def ABC_Completo():
     empleados = Empleado.query.all()
 
     return render_template("ABC_Completo.html", empleados=empleados)
+
+
 
 
 @app.route("/eliminar", methods=["GET", "POST"])
@@ -113,6 +118,24 @@ def agregar_pedido():
         return render_template("pedido.html", form=pedido_form)
     elif request.method == 'GET':
         return render_template("pedido.html", form=pedido_form)
+
+@app.route("/lista_pedidos", methods=["GET"])
+def obtener_pedidos():
+    filtro = request.args.get('filtro')  # Obtener el valor del filtro del parámetro de consulta
+    pedidos = None
+
+    if filtro == 'dia':
+        fecha_actual = datetime.now().date()
+        pedidos = Pedido.query.filter(func.date(Pedido.create_date) == fecha_actual).all()
+    elif filtro == 'mes':
+        fecha_actual = datetime.now()
+        inicio_mes = fecha_actual.replace(day=1)
+        fin_mes = inicio_mes.replace(day=calendar.monthrange(fecha_actual.year, fecha_actual.month)[1])
+        pedidos = Pedido.query.filter(Pedido.create_date >= inicio_mes, Pedido.create_date <= fin_mes).all()
+    else:
+        pedidos = Pedido.query.all()
+    suma_totales = sum(pedido.total for pedido in pedidos)
+    return render_template("ABC_Pedido.html", pedidos=pedidos, suma_totales = suma_totales )
 
 if __name__ == "__main__":
     csrf.init_app(app)

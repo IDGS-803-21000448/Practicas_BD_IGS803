@@ -68,7 +68,7 @@
         const total = document.getElementById('total_pedido').value;
         const confirmacion = confirm(`El total de tu pedido es ${total}. ¿Deseas confirmar el pedido?`);
         if (confirmacion) {
-            alert('Pedido confirmado. Gracias por tu compra.');
+            document.getElementById('pedido_form').submit();
         }
     }
 </script>
@@ -105,7 +105,7 @@
             {{ render_field(form.total, class="form-control", id = "total_pedido") }}
         </div>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit" class="btn btn-primary">Terminar</button>
+        <button type="button" onclick="confirmarPedido()" class="btn btn-primary">Terminar</button>
     </div>
 </form>
 
