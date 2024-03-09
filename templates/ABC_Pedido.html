@@ -4,12 +4,24 @@
 <div class="container">
     <div class="row">
         <h3>Pedidos</h3>
-        <form method="GET">
-            <label for="filtro">Filtrar por:</label>
-            <select name="filtro" id="filtro">
-                <option value="dia">Día</option>
-                <option value="mes">Mes</option>
-            </select>
+        <form method="GET" action="/lista_pedidos">
+            <div>
+                <input type="radio" id="dia" name="tipo_filtro" value="dia" checked>
+                <label for="dia">Filtrar por día</label>
+            </div>
+            <div>
+                <input type="radio" id="mes" name="tipo_filtro" value="mes">
+                <label for="mes">Filtrar por mes</label>
+            </div>
+
+            <label for="filtro_fecha">Fecha:</label>
+            <input type="date" name="filtro_fecha" id="filtro_fecha">
+            <br>
+
+            <label for="filtro_mes">Mes:</label>
+            <input type="month" name="filtro_mes" id="filtro_mes" disabled>
+            <br>
+
             <button type="submit">Filtrar</button>
         </form>
         <h4><a href="/pedidos">Nuevo</a></h4>
@@ -38,4 +50,24 @@
         <p>Suma de los totales: ${{ suma_totales }}</p>
     </div>
 </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+                const tipoFiltro = document.getElementsByName("tipo_filtro");
+                const filtroFecha = document.getElementById("filtro_fecha");
+                const filtroMes = document.getElementById("filtro_mes");
+
+                function actualizarFiltro() {
+                    if (tipoFiltro[0].checked) {
+                        filtroFecha.disabled = false;
+                        filtroMes.disabled = true;
+                    } else {
+                        filtroFecha.disabled = true;
+                        filtroMes.disabled = false;
+                    }
+                }
+
+                tipoFiltro.forEach(radio => radio.addEventListener("change", actualizarFiltro));
+                actualizarFiltro();
+            });
+    </script>
 {% endblock %}

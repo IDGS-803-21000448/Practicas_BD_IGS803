@@ -11,6 +11,8 @@ from flask import request, jsonify
 from datetime import datetime
 import calendar
 from sqlalchemy import func
+from dateutil.relativedelta import relativedelta
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -103,11 +105,13 @@ def modificar():
 def agregar_pedido():
     pedido_form = forms.PedidoForm(request.form)
     if request.method == "POST" and pedido_form.validate():
+        print("Entra aqui")
         nuevo_pedido = Pedido(
             cliente_nombre=pedido_form.cliente_nombre.data,
             cliente_direccion=pedido_form.cliente_direccion.data,
             cliente_telefono=pedido_form.cliente_telefono.data,
-            total=float(pedido_form.total.data)
+            total=float(pedido_form.total.data),
+            fecha_compra= pedido_form.fecha_compra.data
         )
 
         db.session.add(nuevo_pedido)
@@ -118,24 +122,28 @@ def agregar_pedido():
         return render_template("pedido.html", form=pedido_form)
     elif request.method == 'GET':
         return render_template("pedido.html", form=pedido_form)
+    return render_template("pedido.html", form=pedido_form)
+
 
 @app.route("/lista_pedidos", methods=["GET"])
 def obtener_pedidos():
-    filtro = request.args.get('filtro')  # Obtener el valor del filtro del parámetro de consulta
+    tipo_filtro = request.args.get('tipo_filtro')
+    filtro_fecha = request.args.get('filtro_fecha')
+    filtro_mes = request.args.get('filtro_mes')
     pedidos = None
 
-    if filtro == 'dia':
-        fecha_actual = datetime.now().date()
-        pedidos = Pedido.query.filter(func.date(Pedido.create_date) == fecha_actual).all()
-    elif filtro == 'mes':
-        fecha_actual = datetime.now()
-        inicio_mes = fecha_actual.replace(day=1)
-        fin_mes = inicio_mes.replace(day=calendar.monthrange(fecha_actual.year, fecha_actual.month)[1])
-        pedidos = Pedido.query.filter(Pedido.create_date >= inicio_mes, Pedido.create_date <= fin_mes).all()
+    if tipo_filtro == 'dia' and filtro_fecha:
+        fecha_filtro = datetime.strptime(filtro_fecha, "%Y-%m-%d").date()
+        dia_semana_filtro = (fecha_filtro.weekday() + 1) % 7 + 1
+        pedidos = Pedido.query.filter(func.dayofweek(Pedido.fecha_compra) == dia_semana_filtro).all()
+    elif tipo_filtro == 'mes' and filtro_mes:
+        mes = int(filtro_mes.split('-')[1])
+        pedidos = Pedido.query.filter(func.month(Pedido.fecha_compra) == mes).all()
     else:
         pedidos = Pedido.query.all()
+
     suma_totales = sum(pedido.total for pedido in pedidos)
-    return render_template("ABC_Pedido.html", pedidos=pedidos, suma_totales = suma_totales )
+    return render_template("ABC_Pedido.html", pedidos=pedidos, suma_totales=suma_totales)
 
 if __name__ == "__main__":
     csrf.init_app(app)

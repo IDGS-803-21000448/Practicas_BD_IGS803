@@ -74,17 +74,40 @@
 </script>
     
 
-<form action="/pedidos" method="post" id="pedido_form">
+<form action="/pedidos" method="post" id="pedido_form" class="form">
     <div class="container">
         <h2>Nuevo Pedido</h2>
-        {{ render_field(form.cliente_nombre, class="form-control") }}
-        {{ render_field(form.cliente_direccion, class="form-control") }}
-        {{ render_field(form.cliente_telefono, class="form-control") }}
+        <div class="row" style="display: flex;">
+            <div class="col-3">
+                {{ render_field(form.cliente_nombre, class="form-control") }}
+            </div>
+            <div class="col-3">
+                {{ render_field(form.cliente_direccion, class="form-control") }}
+            </div>
+            <div class="col-3">
+                {{ render_field(form.cliente_telefono, class="form-control") }}
+            </div>
+            <div class="col-3">
+                {{ render_field(form.fecha_compra, class="form-control") }}
+            </div>
+           
+            
+        </div>
+        
         <h3>Agregar Pizza al Pedido</h3>
-        {{ render_field(form.tamano_pizza, class="form-control") }}
-        {{ render_field(form.ingredientes, class="form-check-input") }}
-        {{ render_field(form.numero_pizzas, class="form-control", id="numero_pizzas") }}
-        <button type="button" onclick="agregarPizza()" class="btn btn-success">Agregar</button>
+        <div class="row" style="display: flex; width: 350px;">
+            <div class="col-4" style="margin: 10px;">
+                {{ render_field(form.tamano_pizza, class="form-control", style="list-style: none;display: flex;width: 300px;justify-content: space-around;") }}
+            </div>
+            <div class="col-4" style="margin: 10px; width: 350px;">
+                {{ render_field(form.ingredientes, class="form-check-input", style="list-style: none;display: flex;width: 300px;justify-content: space-around;") }}
+            </div>
+            <div class="col-4">
+                {{ render_field(form.numero_pizzas, class="form-control", id="numero_pizzas") }}
+                <button type="button" onclick="agregarPizza()" class="btn btn-success">Agregar</button>
+            </div>
+        </div>
+        
         
         <h3>Detalle del Pedido</h3>
         <table id="detalle_pedido" class="table">
@@ -101,7 +124,6 @@
             </tbody>
         </table>
         <div class="form-group">
-            <label for="total_pedido">Total del Pedido:</label>
             {{ render_field(form.total, class="form-control", id = "total_pedido") }}
         </div>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

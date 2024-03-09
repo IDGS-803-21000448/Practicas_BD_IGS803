@@ -1,5 +1,5 @@
 from wtforms import Form
-from wtforms import StringField, TelField, SelectField,RadioField, EmailField, IntegerField, FloatField, SelectMultipleField
+from wtforms import StringField, TelField, SelectField,RadioField, EmailField, IntegerField, FloatField, SelectMultipleField, DateField
 from wtforms import validators
 from wtforms.widgets import ListWidget, CheckboxInput
 
@@ -51,15 +51,18 @@ class EmpForm(Form):
 class PedidoForm(Form):
     cliente_nombre = StringField('Nombre del Cliente', validators=[
         validators.DataRequired(message='Este campo es requerido'),
-        validators.Length(min=4, max=100, message='Ingresa un nombre válido')
+        validators.Length(min=1, max=100, message='Ingresa un nombre válido')
     ])
     cliente_direccion = StringField('Dirección', validators=[
         validators.DataRequired(message='Este campo es requerido'),
-        validators.Length(min=4, max=100, message='Ingresa una dirección válida')
+        validators.Length(min=1, max=100, message='Ingresa una dirección válida')
     ])
-    cliente_telefono = TelField('Teléfono', validators=[
+    cliente_telefono = StringField('Teléfono', validators=[
         validators.DataRequired(message='Este campo es requerido'),
-        validators.Length(min=7, max=15, message='Ingresa un número de teléfono válido')
+        validators.Length(min=1, max=15, message='Ingresa un número de teléfono válido')
+    ])
+    fecha_compra = DateField('Fecha del Pedido', validators=[
+        validators.DataRequired(message='Este campo es requerido'),
     ])
     tamano_pizza = RadioField('Tamaño de la Pizza', choices=[
         ('Chica', 'Chica $40'),
